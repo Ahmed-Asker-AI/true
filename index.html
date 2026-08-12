@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Truth — Watch all that's our role</title>
+<link rel="icon" href="icon.png">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0f14; --bg-alt:#111820; --card:#141c25;
+    --ink:#edeae3; --muted:#8b93a0; --faint:#5a6270;
+    --gold:#c9a227; --gold-soft:rgba(201,162,39,0.12);
+    --rust:#b5483d; --rust-soft:rgba(181,72,61,0.12);
+    --line:rgba(237,234,227,0.10); --line-strong:rgba(237,234,227,0.18);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg); color:var(--ink); font-family:'Inter',sans-serif; line-height:1.6; min-height:100vh;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  .hidden{display:none !important;}
+  button{font-family:inherit; cursor:pointer;}
+
+  .topbar{display:flex; align-items:center; justify-content:space-between; padding:20px 32px; border-bottom:1px solid var(--line);}
+  .brand{display:flex; align-items:center; gap:10px; font-family:'Fraunces',serif; font-weight:600; font-size:17px;}
+  .brand img{width:24px; height:24px; display:block;}
+  .team-tag{font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--faint); letter-spacing:.04em;}
+
+  #view-login{min-height:calc(100vh - 73px); display:flex; align-items:center; justify-content:center; padding:24px;}
+  .login-card{width:100%; max-width:380px; text-align:center;}
+  .login-card .eyebrow{font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.08em; color:var(--gold); background:var(--gold-soft); border:1px solid rgba(201,162,39,0.35); padding:6px 14px; border-radius:20px; display:inline-block; margin-bottom:24px;}
+  .login-card h1{font-family:'Fraunces',serif; font-weight:600; font-size:30px; margin-bottom:10px;}
+  .login-card p.sub{font-size:14px; color:var(--muted); margin-bottom:32px;}
+  .google-btn{width:100%; display:flex; align-items:center; justify-content:center; gap:10px; background:var(--ink); color:#1a1a1a; border:none; padding:13px; font-size:14px; font-weight:600; border-radius:3px;}
+  .login-note{font-size:11px; color:var(--faint); margin-top:18px; line-height:1.6;}
+
+  .tabs{display:flex; gap:4px; padding:0 32px; border-bottom:1px solid var(--line);}
+  .tab{background:none; border:none; border-bottom:2px solid transparent; padding:16px 18px; font-family:'IBM Plex Mono',monospace; font-size:11.5px; letter-spacing:.03em; text-transform:uppercase; color:var(--faint);}
+  .tab.active{color:var(--gold); border-bottom-color:var(--gold);}
+  .panel{display:none; padding:36px 32px; max-width:760px; margin:0 auto;}
+  .panel.active{display:block;}
+
+  .panel h2{font-family:'Fraunces',serif; font-weight:600; font-size:22px; margin-bottom:6px;}
+  .panel p.desc{font-size:13px; color:var(--muted); margin-bottom:28px;}
+
+  .privacy-mark{display:flex; align-items:center; gap:10px; background:var(--gold-soft); border:1px solid rgba(201,162,39,0.35); border-radius:6px; padding:12px 16px; margin-bottom:28px; font-size:12.5px;}
+  .privacy-mark .dot{width:7px;height:7px;border-radius:50%;background:var(--gold);flex-shrink:0;box-shadow:0 0 0 0 rgba(201,162,39,.6);animation:pulse 2.2s infinite;}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(201,162,39,.55);}70%{box-shadow:0 0 0 6px rgba(201,162,39,0);}100%{box-shadow:0 0 0 0 rgba(201,162,39,0);}}
+  .privacy-mark strong{color:var(--ink);}
+
+  .row{display:flex; justify-content:space-between; align-items:center; padding:14px 0; border-top:1px solid var(--line);}
+  .row:first-of-type{border-top:none;}
+  .row .name{font-size:13.5px; font-weight:600;}
+  .row .hint{font-size:11.5px; color:var(--muted); margin-top:2px;}
+
+  .switch{width:36px; height:20px; border-radius:20px; background:var(--card); border:1px solid var(--line-strong); position:relative; flex-shrink:0;}
+  .switch::after{content:''; position:absolute; top:1px; left:1px; width:16px; height:16px; border-radius:50%; background:var(--faint); transition:all .2s;}
+  .switch.on{border-color:var(--gold); background:var(--gold-soft);}
+  .switch.on::after{left:17px; background:var(--gold);}
+
+  .mode-row{display:flex; gap:8px; margin-bottom:24px;}
+  .mode-opt{flex:1; text-align:center; border:1px solid var(--line-strong); background:var(--bg-alt); padding:11px 4px; font-size:12px; color:var(--muted); border-radius:3px;}
+  .mode-opt.selected{border-color:var(--gold); color:var(--gold); background:var(--gold-soft);}
+
+  .lock-box{border:1px solid var(--line-strong); background:var(--bg-alt); padding:18px; border-radius:6px; margin-top:28px;}
+  .lock-box h4{font-size:13.5px; margin-bottom:4px;}
+  .lock-box p{font-size:12px; color:var(--muted); margin-bottom:12px;}
+  .lock-row{display:flex; gap:8px;}
+  .lock-row input{flex:1; background:var(--card); border:1px solid var(--line-strong); color:var(--ink); padding:9px; font-size:13px; border-radius:3px;}
+  .ghost-btn{background:none; border:1px solid var(--line-strong); color:var(--ink); padding:9px 16px; font-size:12px; border-radius:3px;}
+  .ghost-btn:hover{border-color:var(--gold); color:var(--gold);}
+
+  .lang-toggle{display:flex; gap:6px; margin-bottom:20px;}
+  .lang-btn{border:1px solid var(--line-strong); background:transparent; color:var(--muted); padding:7px 14px; font-size:11.5px; font-family:'IBM Plex Mono',monospace; border-radius:3px;}
+  .lang-btn.active{border-color:var(--gold); color:var(--gold); background:var(--gold-soft);}
+
+  .chat-window{border:1px solid var(--line-strong); border-radius:6px; background:var(--bg-alt); min-height:220px; padding:18px; margin-bottom:14px; display:flex; flex-direction:column; gap:12px;}
+  .msg{max-width:80%; padding:10px 14px; border-radius:6px; font-size:13.5px; line-height:1.5;}
+  .msg.ai{background:var(--card); border:1px solid var(--line); align-self:flex-start;}
+  .msg.user{background:var(--gold-soft); border:1px solid rgba(201,162,39,0.35); align-self:flex-end; color:var(--ink);}
+
+  .ask-row{display:flex; gap:8px;}
+  .ask-row input{flex:1; background:var(--card); border:1px solid var(--line-strong); color:var(--ink); padding:12px 14px; font-size:13.5px; border-radius:3px;}
+  .send-btn{background:var(--gold); color:#191305; border:none; padding:0 20px; font-size:13px; font-weight:600; border-radius:3px;}
+
+  footer{text-align:center; padding:28px 0; color:var(--faint); font-size:11px; font-family:'IBM Plex Mono',monospace;}
+</style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="brand"><img src="icon.png" alt=""> The Truth</div>
+    <div class="team-tag">TEAM ALT+F4</div>
+  </div>
+
+  <div id="view-login">
+    <div class="login-card">
+      <div class="eyebrow">Watch all — that's our role</div>
+      <h1>Scroll safely.</h1>
+      <p class="sub">An AI that watches your feed in the background, flags what looks false, and stays under a permission you control.</p>
+      <button id="googleBtn" class="google-btn">
+        <svg width="16" height="16" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.8 1.1 7.9 3l5.7-5.7C34.5 6 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.9 18.9 13 24 13c3 0 5.8 1.1 7.9 3l5.7-5.7C34.5 6 29.5 4 24 4 16.3 4 9.6 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.4 0 10.3-1.8 14-5.4l-6.5-5.3C29.4 35 26.8 36 24 36c-5.3 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.3-4.3 5.6l6.5 5.3C40.9 36.5 44 30.9 44 24c0-1.3-.1-2.7-.4-3.5z"/></svg>
+        Continue with Google
+      </button>
+      <div class="login-note">Demo sign-in — no account data leaves your browser.</div>
+    </div>
+  </div>
+
+  <div id="view-app" class="hidden">
+    <div class="tabs">
+      <button class="tab active" data-panel="operation">Operation settings</button>
+      <button class="tab" data-panel="permissions">Permission settings</button>
+      <button class="tab" data-panel="ask">Ask AI</button>
+    </div>
+
+    <div class="panel active" id="panel-operation">
+      <h2>Operation settings</h2>
+      <p class="desc">Decide when and where The Truth watches your feed.</p>
+
+      <div class="privacy-mark"><span class="dot"></span> <span><strong>AI is active</strong> — it can currently see what you're viewing on allowed sites.</span></div>
+
+      <div class="row">
+        <div><div class="name">Master switch</div><div class="hint">Turns all watching off everywhere, instantly.</div></div>
+        <div class="switch on" data-toggle></div>
+      </div>
+
+      <div style="margin-top:20px; margin-bottom:8px; font-size:12px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono',monospace; letter-spacing:.04em;">Schedule</div>
+      <div class="mode-row">
+        <div class="mode-opt selected" data-mode="always">Always</div>
+        <div class="mode-opt" data-mode="custom">Custom hours</div>
+        <div class="mode-opt" data-mode="off">Off</div>
+      </div>
+
+      <div class="row"><div><div class="name">Instagram</div></div><div class="switch on" data-toggle></div></div>
+      <div class="row"><div><div class="name">X / Twitter</div></div><div class="switch on" data-toggle></div></div>
+      <div class="row"><div><div class="name">TikTok</div></div><div class="switch on" data-toggle></div></div>
+      <div class="row"><div><div class="name">Facebook</div></div><div class="switch" data-toggle></div></div>
+
+      <div class="lock-box">
+        <h4>Lock with a password</h4>
+        <p>Close the AI's access until you re-enter the password — for moments you want full privacy.</p>
+        <div class="lock-row">
+          <input type="password" placeholder="Set a password">
+          <button class="ghost-btn">Lock</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" id="panel-permissions">
+      <h2>Permission settings</h2>
+      <p class="desc">Limit exactly what the AI is allowed to do — like Jarvis, but on a leash you hold.</p>
+
+      <div class="row"><div><div class="name">Read your feed</div><div class="hint">Needed to check posts as they load.</div></div><div class="switch on" data-toggle></div></div>
+      <div class="row"><div><div class="name">Show marks on screen</div><div class="hint">Displays the visible AI-watching indicator and flags.</div></div><div class="switch on" data-toggle></div></div>
+      <div class="row"><div><div class="name">Send alerts</div><div class="hint">Notifies you when something is flagged.</div></div><div class="switch on" data-toggle></div></div>
+      <div class="row"><div><div class="name">Prevent sharing false info</div><div class="hint">Warns you before you repost or share flagged content.</div></div><div class="switch on" data-toggle></div></div>
+      <div class="row"><div><div class="name">Run in background</div><div class="hint">Keeps watching while you use other tabs.</div></div><div class="switch on" data-toggle></div></div>
+      <div class="row"><div><div class="name">Check shared links</div><div class="hint">Scans links before you open them.</div></div><div class="switch" data-toggle></div></div>
+    </div>
+
+    <div class="panel" id="panel-ask">
+      <h2>Ask AI</h2>
+      <p class="desc">Ask about anything you've seen — in Arabic or English.</p>
+
+      <div class="lang-toggle">
+        <button class="lang-btn active" data-lang="en">English</button>
+        <button class="lang-btn" data-lang="ar">العربية</button>
+      </div>
+
+      <div class="chat-window" id="chatWindow">
+        <div class="msg ai" id="greetMsg">Hi — ask me to check anything you've read, or ask why something got flagged.</div>
+      </div>
+
+      <div class="ask-row">
+        <input type="text" id="askInput" placeholder="Ask something…">
+        <button class="send-btn" id="sendBtn">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>THE TRUTH · TEAM ALT+F4 · Correct information for followers</footer>
+
+<script>
+  document.getElementById('googleBtn').addEventListener('click', () => {
+    document.getElementById('view-login').classList.add('hidden');
+    document.getElementById('view-app').classList.remove('hidden');
+  });
+
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('panel-' + tab.dataset.panel).classList.add('active');
+    });
+  });
+
+  document.querySelectorAll('[data-toggle]').forEach(sw => {
+    sw.addEventListener('click', () => sw.classList.toggle('on'));
+  });
+
+  document.querySelectorAll('.mode-opt').forEach(opt => {
+    opt.addEventListener('click', () => {
+      document.querySelectorAll('.mode-opt').forEach(o => o.classList.remove('selected'));
+      opt.classList.add('selected');
+    });
+  });
+
+  let currentLang = 'en';
+  const greetings = {
+    en: "Hi — ask me to check anything you've read, or ask why something got flagged.",
+    ar: "أهلاً — اسألني عن أي حاجة قريتها، أو ليه اتحطلها علامة تحذير."
+  };
+  const placeholders = { en: 'Ask something…', ar: 'اكتب سؤالك…' };
+  const askInput = document.getElementById('askInput');
+
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentLang = btn.dataset.lang;
+      document.getElementById('greetMsg').textContent = greetings[currentLang];
+      askInput.placeholder = placeholders[currentLang];
+      askInput.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+    });
+  });
+
+  function sendMessage(){
+    const text = askInput.value.trim();
+    if(!text) return;
+    const chat = document.getElementById('chatWindow');
+
+    const userMsg = document.createElement('div');
+    userMsg.className = 'msg user';
+    userMsg.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+    userMsg.textContent = text;
+    chat.appendChild(userMsg);
+    askInput.value = '';
+
+    setTimeout(() => {
+      const reply = document.createElement('div');
+      reply.className = 'msg ai';
+      reply.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+      reply.textContent = currentLang === 'ar'
+        ? "ده رد تجريبي — في النسخة الكاملة، الـ AI هيدور في مصادر موثوقة ويقولك الحقيقة بالتفصيل."
+        : "This is a demo reply — in the full version, the AI would check trusted sources and explain what it found.";
+      chat.appendChild(reply);
+      chat.scrollTop = chat.scrollHeight;
+    }, 500);
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  document.getElementById('sendBtn').addEventListener('click', sendMessage);
+  askInput.addEventListener('keydown', e => { if(e.key === 'Enter') sendMessage(); });
+</script>
+
+</body>
+</html>
